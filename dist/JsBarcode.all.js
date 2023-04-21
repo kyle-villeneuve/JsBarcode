@@ -145,15 +145,16 @@ var API = function () {
   function API(element, text, options) {
     _classCallCheck(this, API);
 
-    this._options = _defaults2.default;
-    this._options = this.options(options);
-    this._options.format = this._options.format || autoSelectBarcode();
-
     this.barcodes = [];
     this._headless = element == null;
     this._renderProperties = this._headless ? [] : (0, _getRenderProperties2.default)(element);
     this._encodings = [];
     this._errorHandler = new _ErrorHandler2.default(this);
+
+    this._defaults = _defaults2.default;
+    this._options = _defaults2.default;
+    this.options(options);
+    this._options.format = autoSelectBarcode(this._options.format);
 
     // Register all barcodes
     for (var name in _barcodes2.default) {
@@ -164,7 +165,8 @@ var API = function () {
     }
 
     // If text is set, use the simple syntax (render the barcode directly)
-    if (typeof text !== "undefined") {
+    if (!this._headless && typeof text !== "undefined") {
+      if (!(this._options.format in this)) throw new Error('Format "' + this._options.format + '" is not supported');
       this[this._options.format](text, this._options).render();
     }
   }
@@ -176,7 +178,6 @@ var API = function () {
   _createClass(API, [{
     key: 'options',
     value: function options(_options) {
-      if (!_options) return this;
       this._options = (0, _merge2.default)(this._options, _options);
       return this;
     }
@@ -225,10 +226,18 @@ var API = function () {
       }
     }
   }, {
-    key: 'render',
-
+    key: 'encode',
+    value: function encode(format, value) {
+      var Barcode = _barcodes2.default[format];
+      if (!Barcode) throw new _exceptions.InvalidSymbologyException();
+      var instance = new Barcode(value, {});
+      return instance.data;
+    }
 
     // The render API call. Calls the real render function.
+
+  }, {
+    key: 'render',
     value: function render() {
       if (!this._renderProperties) {
         throw new _exceptions.NoElementException();
@@ -263,16 +272,10 @@ var API = function () {
         });
       };
 
-      this[name] = callback;
-      this[name.toUpperCase()] = callback;
-    }
-  }], [{
-    key: 'encode',
-    value: function encode(format, value) {
-      var Barcode = _barcodes2.default[format];
-      if (!Barcode) throw new _exceptions.InvalidSymbologyException();
-      var instance = new Barcode(value, {});
-      return instance.data;
+      var bound = callback.bind(this);
+
+      this[name] = bound;
+      this[name.toUpperCase()] = bound;
     }
   }]);
 
@@ -321,7 +324,9 @@ function encode(text, Encoder, options) {
   return encoded;
 }
 
-function autoSelectBarcode() {
+function autoSelectBarcode(value) {
+  if (value && value !== 'auto') return value;
+
   // If CODE128 exists. Use it
   if (_barcodes2.default["CODE128"]) {
     return "CODE128";
