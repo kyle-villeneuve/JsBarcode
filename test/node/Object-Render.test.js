@@ -9,12 +9,11 @@ describe('Object', function() {
 		assert.equal(typeof data.encodings, 'object');
 	});
 
-	it('should catch null', function() {
-		assert.throws(
+	it('should allow null', function() {
+		assert.doesNotThrow(
 			() => {
 				JsBarcode(null, '12345678');
 			},
-			/InvalidElementException/
 		);
 	});
 
@@ -33,9 +32,9 @@ describe('Object', function() {
 	it('should work for different types', function () {
 		var data = {};
 		JsBarcode(data, '550000000000', {
-			format: 'upc'
+			format: 'UPC'
 		});
 		assert.equal(data.encodings.length, 7);
-		assert.ok(data.encodings.every((val) => val.options.format === 'upc'));
+		assert.ok(data.encodings.every((val) => val.options.format === 'UPC'));
 	});
 });

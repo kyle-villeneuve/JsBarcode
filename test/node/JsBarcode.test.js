@@ -130,3 +130,14 @@ describe('Generic barcode', function() {
     assert.equal(enc.encode().text, "1234");
   });
 });
+
+describe('Headless mode', function() {
+  it('should not fail in headless mode', function () {
+    assert.doesNotThrow(() => JsBarcode(null))
+    
+  });
+  it('should encode headless format/value', function () {
+    assert.doesNotThrow(() => JsBarcode(null))
+    assert.equal(JsBarcode().encode('codabar', "72572273070"), "A72572273070A")
+  });
+});

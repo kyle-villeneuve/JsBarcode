@@ -26,4 +26,16 @@ class NoElementException extends Error{
 	}
 }
 
-export {InvalidInputException, InvalidElementException, NoElementException};
+class InvalidSymbologyException extends Error{
+	constructor(symbology) {
+		super();
+		this.name = "InvalidSymbologyException";
+
+		this.symbology = symbology;
+
+    this.message = '"' + this.sybology + '" is not a supported';
+	}
+}
+
+export { InvalidInputException, InvalidElementException, NoElementException, InvalidSymbologyException };
+

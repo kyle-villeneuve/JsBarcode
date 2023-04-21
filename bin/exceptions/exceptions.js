@@ -62,6 +62,26 @@ var NoElementException = function (_Error3) {
 	return NoElementException;
 }(Error);
 
+var InvalidSymbologyException = function (_Error4) {
+	_inherits(InvalidSymbologyException, _Error4);
+
+	function InvalidSymbologyException(symbology) {
+		_classCallCheck(this, InvalidSymbologyException);
+
+		var _this4 = _possibleConstructorReturn(this, (InvalidSymbologyException.__proto__ || Object.getPrototypeOf(InvalidSymbologyException)).call(this));
+
+		_this4.name = "InvalidSymbologyException";
+
+		_this4.symbology = symbology;
+
+		_this4.message = '"' + _this4.sybology + '" is not a supported';
+		return _this4;
+	}
+
+	return InvalidSymbologyException;
+}(Error);
+
 exports.InvalidInputException = InvalidInputException;
 exports.InvalidElementException = InvalidElementException;
 exports.NoElementException = NoElementException;
+exports.InvalidSymbologyException = InvalidSymbologyException;
